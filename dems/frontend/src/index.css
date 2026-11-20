@@ -1,0 +1,134 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* ------------------------------------------------------------------ */
+/* Design tokens: Apple-inspired light workstation                      */
+/* Colours are RGB channels so Tailwind can apply opacity (rgb(var(--x) / .5)). */
+/* ------------------------------------------------------------------ */
+@layer base {
+  :root {
+    --canvas-from: 245 245 247; /* #F5F5F7 */
+    --canvas-to: 255 249 245;   /* #FFF9F5 */
+
+    --ink: 29 29 31;            /* #1D1D1F */
+    --ink-soft: 110 110 115;    /* #6E6E73  secondary label, 4.9:1 on white */
+    --ink-faint: 134 134 139;   /* #86868B  decorative only */
+
+    --accent: 217 72 15;        /* #D9480F */
+    --accent-strong: 194 65 12; /* #C2410C */
+    --accent-soft: 255 138 61;  /* #FF8A3D  glow / gradient end */
+
+    --apple-blue: 0 122 255;    /* #007AFF */
+    --apple-blue-ink: 0 92 214;
+    --apple-green: 52 199 89;   /* #34C759 */
+    --apple-green-ink: 30 126 52;
+    --apple-red: 255 59 48;     /* #FF3B30 */
+    --apple-red-ink: 196 24 14;
+    --apple-amber: 255 149 0;
+    --apple-amber-ink: 153 82 0;
+
+    --glass-bg: rgba(255, 255, 255, 0.8);
+    --glass-bg-strong: rgba(255, 255, 255, 0.92);
+    --glass-border: rgba(0, 0, 0, 0.06);
+  }
+
+  * { -webkit-tap-highlight-color: transparent; }
+
+  html {
+    font-family: 'Inter', ui-sans-serif, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    font-feature-settings: 'cv11', 'ss03', 'calt';
+    text-rendering: optimizeLegibility;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    scroll-behavior: smooth;
+    color-scheme: light;
+  }
+
+  body {
+    margin: 0;
+    min-height: 100vh;
+    color: rgb(var(--ink));
+    font-weight: 400;
+    /* #F5F5F7 -> faint white-orange #FFF9F5 */
+    background: linear-gradient(180deg, rgb(var(--canvas-from)) 0%, rgb(var(--canvas-to)) 100%) fixed;
+  }
+
+  h1, h2, h3, h4 { font-weight: 700; letter-spacing: -0.03em; }
+
+  ::selection { background: rgb(var(--apple-blue) / 0.22); }
+
+  :focus-visible {
+    outline: 2px solid rgb(var(--apple-blue));
+    outline-offset: 2px;
+    border-radius: 10px;
+  }
+
+  button, a, input, select, textarea { font-family: inherit; }
+}
+
+@layer components {
+  /* Frosted white glass: rgba(255,255,255,.8) + 20px blur + hairline border + soft shadow */
+  .apple-glass {
+    background: var(--glass-bg);
+    -webkit-backdrop-filter: blur(20px) saturate(180%);
+    backdrop-filter: blur(20px) saturate(180%);
+    border: 1px solid var(--glass-border);
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.04), 0 10px 30px -10px rgba(0, 0, 0, 0.12);
+  }
+
+  .apple-glass-strong {
+    background: var(--glass-bg-strong);
+    -webkit-backdrop-filter: blur(32px) saturate(180%);
+    backdrop-filter: blur(32px) saturate(180%);
+    border: 1px solid var(--glass-border);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.04), 0 24px 60px -20px rgba(0, 0, 0, 0.18);
+  }
+
+  @supports not ((backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px))) {
+    .apple-glass { background: rgba(255, 255, 255, 0.96); }
+    .apple-glass-strong { background: rgba(255, 255, 255, 0.98); }
+  }
+
+  /* Hashes and identifiers: Inter with tabular figures, never a monospace display face */
+  .hash {
+    font-variant-numeric: tabular-nums slashed-zero;
+    font-feature-settings: 'tnum', 'zero', 'cv11';
+    letter-spacing: 0.01em;
+    word-break: break-all;
+  }
+
+  .btn {
+    @apply inline-flex items-center justify-center gap-2 rounded-full px-5 py-2.5 text-sm font-semibold
+           transition duration-200 disabled:pointer-events-none disabled:opacity-50 active:scale-[0.98];
+  }
+  .btn-dark { @apply btn bg-ink text-white shadow-glass-sm hover:bg-black; }
+  .btn-accent {
+    @apply btn text-white shadow-glass-sm hover:brightness-110;
+    background: linear-gradient(180deg, rgb(var(--accent)) 0%, rgb(var(--accent-strong)) 100%);
+  }
+  .btn-glass { @apply btn apple-glass text-ink hover:bg-white; }
+
+  .field {
+    @apply w-full rounded-2xl border border-hairline bg-white/90 px-4 py-3 text-[15px] text-ink shadow-sm
+           outline-none transition placeholder:text-ink-faint focus:border-apple-blue focus:ring-4 focus:ring-apple-blue/15;
+  }
+}
+
+/* ------------------------------------------------------------------ */
+/* Scrollbars                                                           */
+/* ------------------------------------------------------------------ */
+* { scrollbar-width: thin; scrollbar-color: rgba(0, 0, 0, 0.18) transparent; }
+*::-webkit-scrollbar { width: 10px; height: 10px; }
+*::-webkit-scrollbar-track { background: transparent; }
+*::-webkit-scrollbar-thumb {
+  background: rgba(0, 0, 0, 0.16);
+  border-radius: 999px;
+  border: 3px solid transparent;
+  background-clip: content-box;
+}
+*::-webkit-scrollbar-thumb:hover { background: rgba(0, 0, 0, 0.3); background-clip: content-box; border: 3px solid transparent; }
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { animation-duration: 0.001ms !important; transition-duration: 0.001ms !important; scroll-behavior: auto !important; }
+}
